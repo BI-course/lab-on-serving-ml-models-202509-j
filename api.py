@@ -38,13 +38,15 @@ CORS(
                    "http://127.0.0.1", "http://localhost",
                    "http://127.0.0.1:5000", "http://localhost:5000",
                    "http://127.0.0.1:5500", "http://localhost:5500"
+                   "https://refactored-carnival-56jrvpj6q96fpxq9-5500.app.github.dev",
+                   "https://refactored-carnival-56jrvpj6q96fpxq9-5000.app.github.dev"
                 ]
     }},
     methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type"])
 
-# CORS(app, supports_credentials=False,
-#      origins=["*"])
+CORS(app, supports_credentials=False,
+     origins=["*"])
 
 # Load different models
 # joblib is used to load a trained model so that the API can serve ML predictions

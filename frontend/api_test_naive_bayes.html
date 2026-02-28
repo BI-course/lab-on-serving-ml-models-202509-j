@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Naive Bayes Classifier - Web Analytics Purchase Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            max-width: 600px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .form-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+        }
+        h3 {
+            margin-top: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Predict Online Purchase Intent - Naive Bayes Classifier</h2>
+<p>Enter web session analytics data to predict if visitor will make a purchase</p>
+
+<form id="predictForm">
+    <div class="form-section">
+        <h3>Page Views</h3>
+        <label for="Administrative">Administrative Pages:</label>
+        <input type="number" id="Administrative" name="Administrative" value="0" required>
+
+        <label for="Administrative_Duration">Administrative Duration (seconds):</label>
+        <input type="number" id="Administrative_Duration" name="Administrative_Duration" value="0" step="0.1" required>
+
+        <label for="Informational">Informational Pages:</label>
+        <input type="number" id="Informational" name="Informational" value="0" required>
+
+        <label for="Informational_Duration">Informational Duration (seconds):</label>
+        <input type="number" id="Informational_Duration" name="Informational_Duration" value="0" step="0.1" required>
+
+        <label for="ProductRelated">Product Pages:</label>
+        <input type="number" id="ProductRelated" name="ProductRelated" value="1" required>
+
+        <label for="ProductRelated_Duration">Product Duration (seconds):</label>
+        <input type="number" id="ProductRelated_Duration" name="ProductRelated_Duration" value="0" step="0.1" required>
+    </div>
+
+    <div class="form-section">
+        <h3>Session Metrics</h3>
+        <label for="BounceRates">Bounce Rate (0-1):</label>
+        <input type="number" id="BounceRates" name="BounceRates" value="0.2" step="0.01" min="0" max="1" required>
+
+        <label for="ExitRates">Exit Rate (0-1):</label>
+        <input type="number" id="ExitRates" name="ExitRates" value="0.2" step="0.01" min="0" max="1" required>
+
+        <label for="PageValues">Page Values:</label>
+        <input type="number" id="PageValues" name="PageValues" value="0" step="0.1" required>
+
+        <label for="SpecialDay">Special Day (0-1):</label>
+        <input type="number" id="SpecialDay" name="SpecialDay" value="0" step="0.1" min="0" max="1" required>
+    </div>
+
+    <div class="form-section">
+        <h3>Visitor Information</h3>
+        <label for="Month">Month:</label>
+        <select id="Month" name="Month" required>
+            <option value="Jan">January</option>
+            <option value="Feb" selected>February</option>
+            <option value="Mar">March</option>
+            <option value="Apr">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="Jul">July</option>
+            <option value="Aug">August</option>
+            <option value="Sep">September</option>
+            <option value="Oct">October</option>
+            <option value="Nov">November</option>
+            <option value="Dec">December</option>
+        </select>
+
+        <label for="OperatingSystems">Operating System (1-8):</label>
+        <input type="number" id="OperatingSystems" name="OperatingSystems" value="1" min="1" max="8" required>
+
+        <label for="Browser">Browser (1-13):</label>
+        <input type="number" id="Browser" name="Browser" value="1" min="1" max="13" required>
+
+        <label for="Region">Region (1-9):</label>
+        <input type="number" id="Region" name="Region" value="1" min="1" max="9" required>
+
+        <label for="TrafficType">Traffic Type (1-20):</label>
+        <input type="number" id="TrafficType" name="TrafficType" value="1" min="1" max="20" required>
+
+        <label for="VisitorType">Visitor Type:</label>
+        <select id="VisitorType" name="VisitorType" required>
+            <option value="Returning_Visitor" selected>Returning Visitor</option>
+            <option value="New_Visitor">New Visitor</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <label for="Weekend">Weekend:</label>
+        <select id="Weekend" name="Weekend" required>
+            <option value="FALSE" selected>Weekday</option>
+            <option value="TRUE">Weekend</option>
+        </select>
+    </div>
+
+    <button type="submit">Predict Purchase Intent</button>
+</form>
+
+<div id="result"></div>
+
+<script>
+    document.getElementById('predictForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const data = {
+            Administrative: parseInt(document.getElementById('Administrative').value),
+            Administrative_Duration: parseFloat(document.getElementById('Administrative_Duration').value),
+            Informational: parseInt(document.getElementById('Informational').value),
+            Informational_Duration: parseFloat(document.getElementById('Informational_Duration').value),
+            ProductRelated: parseInt(document.getElementById('ProductRelated').value),
+            ProductRelated_Duration: parseFloat(document.getElementById('ProductRelated_Duration').value),
+            BounceRates: parseFloat(document.getElementById('BounceRates').value),
+            ExitRates: parseFloat(document.getElementById('ExitRates').value),
+            PageValues: parseFloat(document.getElementById('PageValues').value),
+            SpecialDay: parseFloat(document.getElementById('SpecialDay').value),
+            Month: document.getElementById('Month').value,
+            OperatingSystems: parseInt(document.getElementById('OperatingSystems').value),
+            Browser: parseInt(document.getElementById('Browser').value),
+            Region: parseInt(document.getElementById('Region').value),
+            TrafficType: parseInt(document.getElementById('TrafficType').value),
+            VisitorType: document.getElementById('VisitorType').value,
+            Weekend: document.getElementById('Weekend').value
+        };
+
+        try {
+            const response = await fetch('https://refactored-carnival-56jrvpj6q96fpxq9-5000.app.github.dev/api/v1/models/naive-bayes-classifier/predictions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            const prediction = result['Predicted Class'];
+            const predictionText = prediction === 1 ? 
+                ' PURCHASE LIKELY (Class 1)' : 
+                ' NO PURCHASE EXPECTED (Class 0)';
+            
+            document.getElementById('result').innerHTML = 
+                '<strong>Prediction:</strong> ' + predictionText;
+
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('result').innerText = 
+                ' Error occurred while making prediction.';
+        }
+    });
+</script>
+
+</body>
+</html>
