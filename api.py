@@ -65,6 +65,14 @@ label_encoders_5 = joblib.load('./model/label_encoders_5.pkl')
 scaler_4 = joblib.load('./model/scaler_4.pkl')
 scaler_5 = joblib.load('./model/scaler_5.pkl')
 
+@app.route('/', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy", "message": "ML API is running"}), 200
+
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({"status": "ok"}), 200
+
 # Defines an HTTP endpoint
 @app.route('/api/v1/models/decision-tree-classifier/predictions', methods=['POST'])
 def predict_decision_tree_classifier():
