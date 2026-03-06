@@ -131,24 +131,35 @@ if st.session_state.cart:
                 **For demo purposes**, here are some sample recommendations based on common patterns:
                 """)
                 
-                # Fallback dummy recommendations for demo
-                dummy_recs = []
-                if 'whole milk' in st.session_state.cart:
-                    dummy_recs = ['other vegetables', 'rolls/buns', 'yogurt']
-                elif 'yogurt' in st.session_state.cart:
-                    dummy_recs = ['whole milk', 'tropical fruit']
-                else:
-                    dummy_recs = ['whole milk', 'other vegetables']
-                
-                # Remove items already in cart
-                dummy_recs = [item for item in dummy_recs if item not in st.session_state.cart]
-                
-                st.success("### Sample Recommendations:")
-                for i, rec in enumerate(dummy_recs[:5], 1):
-                    st.markdown(f"**{i}.** {rec}")
-                
-                st.info(" This is a fallback demo. In production, this connects to the Flask API.")
 
+if st.button("✨ Get Recommendations", type="primary", use_container_width=True):
+    # Direct logic - no API call
+    cart_set = set(st.session_state.cart)
+    recommendations = []
+    
+    # Association rule logic
+    if 'whole milk' in cart_set:
+        recommendations = ['other vegetables', 'rolls/buns', 'yogurt']
+    elif 'yogurt' in cart_set:
+        recommendations = ['whole milk', 'tropical fruit']
+    elif 'tropical fruit' in cart_set:
+        recommendations = ['yogurt', 'whole milk']
+    else:
+        recommendations = ['whole milk', 'other vegetables', 'yogurt']
+    
+    # Remove items already in cart
+    recommendations = [item for item in recommendations if item not in cart_set]
+    
+    if recommendations:
+        st.success("### 🎯 Recommended Products:")
+        for i, rec in enumerate(recommendations[:5], 1):
+            st.markdown(f"**{i}.** {rec}")
+        st.balloons()
+    else:
+        st.info("No recommendations available for these items.")
+        
+        
+                
 else:
     st.info(" Add items to your cart to get started!")
 
