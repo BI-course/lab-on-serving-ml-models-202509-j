@@ -92,44 +92,37 @@ if st.session_state.cart:
     st.divider()
     
     # Get recommendations button
-    if st.button("✨ Get Recommendations", type="primary", use_container_width=True):
-        with st.spinner("Finding best recommendations..."):
-            try:
-                # Call your API
-                # NOTE: Change this URL to your actual API endpoint
-                # For local testing: http://127.0.0.1:5000
-                # For production: your deployed API URL
-                API_URL = "http://127.0.0.1:5000/api/v1/models/recommender/predictions"
+   if st.button("✨ Get Recommendations", type="primary", use_container_width=True):
+    with st.spinner("Finding best recommendations..."):
+        try:
+            # Call your PUBLIC Render API
+            API_URL = "https://ml-api-bbt4206-lab-on-serving-ml-models.onrender.com/api/v1/models/recommender/predictions"
+            
+            response = requests.post(
+                API_URL,
+                json={"cart": st.session_state.cart},
+                timeout=30  # 30 seconds for free tier wake-up
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                recommendations = result.get('recommendations', [])
                 
-                response = requests.post(
-                    API_URL,
-                    json={"cart": st.session_state.cart},
-                    timeout=10
-                )
-                
-                if response.status_code == 200:
-                    result = response.json()
-                    recommendations = result.get('recommendations', [])
-                    
-                    if recommendations:
-                        st.success("###  Recommended Products:")
-                        
-                        # Display recommendations in a nice format
-                        for i, rec in enumerate(recommendations, 1):
-                            st.markdown(f"**{i}.** {rec}")
-                        
-                        st.balloons()
-                    else:
-                        st.info("No recommendations available for these items.")
+                if recommendations:
+                    st.success("### 🎯 Recommended Products:")
+                    for i, rec in enumerate(recommendations, 1):
+                        st.markdown(f"**{i}.** {rec}")
+                    st.balloons()
                 else:
-                    st.error(f"API Error: {response.status_code}")
-                    
-            except requests.exceptions.RequestException as e:
-                st.error(f"""
-                 Could not connect to API.
+                    st.info("No recommendations available for these items.")
+            else:
+                st.error(f"API Error: {response.status_code}")
                 
-                **For demo purposes**, here are some sample recommendations based on common patterns:
-                """)
+        except requests.exceptions.Timeout:
+            st.warning("⏳ API is waking up (free tier), please try again in 10 seconds!")
+            
+        except requests.exceptions.RequestException as e:
+            st.error(f"⚠️ Could not connect to API: {str(e)}")
                 
 
 if st.button("✨ Get Recommendations", type="primary", use_container_width=True):
