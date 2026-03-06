@@ -46,7 +46,7 @@ COMMON_ITEMS = [
 ]
 
 # Main content
-st.header("Build Your Shopping Cart")
+st.header("🛍️ Build Your Shopping Cart")
 
 # Two columns for input
 col1, col2 = st.columns([3, 1])
@@ -91,75 +91,46 @@ if st.session_state.cart:
     
     st.divider()
     
-    # Get recommendations button
-   if st.button("✨ Get Recommendations", type="primary", use_container_width=True):
-    with st.spinner("Finding best recommendations..."):
-        try:
-            # Call your PUBLIC Render API
-            API_URL = "https://ml-api-bbt4206-lab-on-serving-ml-models.onrender.com/api/v1/models/recommender/predictions"
-            
-            response = requests.post(
-                API_URL,
-                json={"cart": st.session_state.cart},
-                timeout=30  # 30 seconds for free tier wake-up
-            )
-            
-            if response.status_code == 200:
-                result = response.json()
-                recommendations = result.get('recommendations', [])
+    # Get recommendations button - ONLY ONE!
+    if st.button("✨ Get Recommendations", type="primary", use_container_width=True):
+        with st.spinner("Finding best recommendations..."):
+            try:
+                # Call PUBLIC Render API
+                API_URL = "https://ml-api-bbt4206-lab-on-serving-ml-models.onrender.com/api/v1/models/recommender/predictions"
                 
-                if recommendations:
-                    st.success("### 🎯 Recommended Products:")
-                    for i, rec in enumerate(recommendations, 1):
-                        st.markdown(f"**{i}.** {rec}")
-                    st.balloons()
+                response = requests.post(
+                    API_URL,
+                    json={"cart": st.session_state.cart},
+                    timeout=30
+                )
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    recommendations = result.get('recommendations', [])
+                    
+                    if recommendations:
+                        st.success("### 🎯 Recommended Products:")
+                        for i, rec in enumerate(recommendations, 1):
+                            st.markdown(f"**{i}.** {rec}")
+                        st.balloons()
+                    else:
+                        st.info("No recommendations available for these items.")
                 else:
-                    st.info("No recommendations available for these items.")
-            else:
-                st.error(f"API Error: {response.status_code}")
+                    st.error(f"API Error: {response.status_code}")
+                    
+            except requests.exceptions.Timeout:
+                st.warning("⏳ API is waking up (free tier), please try again in 10 seconds!")
                 
-        except requests.exceptions.Timeout:
-            st.warning("⏳ API is waking up (free tier), please try again in 10 seconds!")
-            
-        except requests.exceptions.RequestException as e:
-            st.error(f"⚠️ Could not connect to API: {str(e)}")
-                
+            except requests.exceptions.RequestException as e:
+                st.error(f"⚠️ Could not connect to API")
 
-if st.button("✨ Get Recommendations", type="primary", use_container_width=True):
-    # Direct logic - no API call
-    cart_set = set(st.session_state.cart)
-    recommendations = []
-    
-    # Association rule logic
-    if 'whole milk' in cart_set:
-        recommendations = ['other vegetables', 'rolls/buns', 'yogurt']
-    elif 'yogurt' in cart_set:
-        recommendations = ['whole milk', 'tropical fruit']
-    elif 'tropical fruit' in cart_set:
-        recommendations = ['yogurt', 'whole milk']
-    else:
-        recommendations = ['whole milk', 'other vegetables', 'yogurt']
-    
-    # Remove items already in cart
-    recommendations = [item for item in recommendations if item not in cart_set]
-    
-    if recommendations:
-        st.success("### 🎯 Recommended Products:")
-        for i, rec in enumerate(recommendations[:5], 1):
-            st.markdown(f"**{i}.** {rec}")
-        st.balloons()
-    else:
-        st.info("No recommendations available for these items.")
-        
-        
-                
 else:
-    st.info(" Add items to your cart to get started!")
+    st.info("👆 Add items to your cart to get started!")
 
 # Footer
 st.divider()
 st.markdown("""
 <div style='text-align: center; color: gray; font-size: 0.9em;'>
-    Built using Streamlit | BBT 4206 - Business Intelligence II Lab
+    Built with ❤️ using Streamlit | BBT 4206 - Business Intelligence II Lab
 </div>
 """, unsafe_allow_html=True)
