@@ -131,6 +131,6 @@ else:
 st.divider()
 st.markdown("""
 <div style='text-align: center; color: gray; font-size: 0.9em;'>
-    Built with ❤️ using Streamlit | BBT 4206 - Business Intelligence II Lab
+    
 </div>
 """, unsafe_allow_html=True)
