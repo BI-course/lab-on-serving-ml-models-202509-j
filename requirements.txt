@@ -1,0 +1,12 @@
+# requirements/base.txt
+Requests
+numpy
+pandas
+joblib
+scikit-learn
+mlxtend
+flask
+flask-cors# requirements/prod.txt
+-r https://raw.githubusercontent.com/course-files/ServingMLModels/refs/heads/main/requirements/base.txt
+
+gunicorn
