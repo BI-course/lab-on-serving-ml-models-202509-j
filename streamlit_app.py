@@ -17,7 +17,7 @@ Add items to your cart and get personalized recommendations!
 
 # Sidebar with info
 with st.sidebar:
-    st.header("ℹ️ About")
+    st.header("About")
     st.markdown("""
     **Technology Stack:**
     - Machine Learning: Association Rules (Apriori)
@@ -46,7 +46,7 @@ COMMON_ITEMS = [
 ]
 
 # Main content
-st.header("🛍️ Build Your Shopping Cart")
+st.header(" Build Your Shopping Cart")
 
 # Two columns for input
 col1, col2 = st.columns([3, 1])
@@ -92,7 +92,7 @@ if st.session_state.cart:
     st.divider()
     
     # Get recommendations button - ONLY ONE!
-    if st.button("✨ Get Recommendations", type="primary", use_container_width=True):
+    if st.button(" Get Recommendations", type="primary", use_container_width=True):
         with st.spinner("Finding best recommendations..."):
             try:
                 # Call PUBLIC Render API
@@ -125,7 +125,7 @@ if st.session_state.cart:
                 st.error(f"⚠️ Could not connect to API")
 
 else:
-    st.info("👆 Add items to your cart to get started!")
+    st.info(" Add items to your cart to get started!")
 
 # Footer
 st.divider()
