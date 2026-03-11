@@ -53,6 +53,7 @@ CORS(app, supports_credentials=False,
 decisiontree_classifier_baseline = joblib.load('./model/decisiontree_classifier_baseline.pkl')
 decisiontree_regressor_optimum = joblib.load('./model/decisiontree_regressor_optimum.pkl')
 label_encoders_1b = joblib.load('./model/label_encoders_1b.pkl')
+association_rules = pd.read_csv('./model/association_rules.csv')
 
 naive_bayes_classifier = joblib.load('./model/naive_Bayes_classifier_optimum.pkl')
 knn_classifier = joblib.load('./model/knn_classifier_optimum.pkl')
@@ -328,6 +329,8 @@ def predict_random_forest_classifier():
 ## The server will automatically reload if you make code changes.
 ## You get detailed error messages in the browser if something goes wrong.
 
+
+
 @app.route('/api/v1/models/recommender/predictions', methods=['POST'])
 def recommend_products():
     data = request.get_json()
@@ -342,16 +345,32 @@ def recommend_products():
     cart_set = set(cart)
     recommendations = []
     
-    # Simple rule-based recommendations
-    if 'whole milk' in cart_set:
-        recommendations = ['other vegetables', 'rolls/buns', 'yogurt']
-    elif 'yogurt' in cart_set:
-        recommendations = ['whole milk', 'tropical fruit']
-    else:
-        recommendations = ['whole milk', 'other vegetables']
+    # Match cart items to association rules
+    for _, rule in association_rules.iterrows():
+        try:
+            # Parse antecedents (items that trigger the rule)
+            antecedents = eval(rule['antecedents']) if isinstance(rule['antecedents'], str) else rule['antecedents']
+            consequents = eval(rule['consequents']) if isinstance(rule['consequents'], str) else rule['consequents']
+            
+            # Convert to sets for comparison
+            if not isinstance(antecedents, set):
+                antecedents = set(antecedents) if isinstance(antecedents, (list, tuple)) else {antecedents}
+            if not isinstance(consequents, set):
+                consequents = set(consequents) if isinstance(consequents, (list, tuple)) else {consequents}
+            
+            # If cart contains all items in antecedents, recommend consequents
+            if antecedents.issubset(cart_set):
+                for item in consequents:
+                    if item not in cart_set and item not in recommendations:
+                        recommendations.append(item)
+                        
+        except (ValueError, SyntaxError, TypeError):
+            continue
     
-    # Remove items already in cart
-    recommendations = [item for item in recommendations if item not in cart_set]
+    # If no rules matched, provide popular items
+    if not recommendations:
+        recommendations = ['whole milk', 'other vegetables', 'yogurt']
+        recommendations = [item for item in recommendations if item not in cart_set]
     
     return jsonify({
         'recommendations': recommendations[:5],
