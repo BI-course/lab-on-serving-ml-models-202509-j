@@ -24,3 +24,6 @@
 
 **Specify the public URL to the Gradio/Streamlit App**:  
 https://lab-on-serving-ml-models-202509-j-na96fq6lyquywdkh9jxs2q.streamlit.app/
+
+**Server Link**: 
+https://ml-api-bbt4206-lab-on-serving-ml-models.onrender.com
