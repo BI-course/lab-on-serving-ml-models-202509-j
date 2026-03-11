@@ -36,13 +36,10 @@ if 'cart' not in st.session_state:
 
 # Common grocery items for suggestions
 COMMON_ITEMS = [
-    "whole milk", "yogurt", "other vegetables", "rolls/buns",
-    "tropical fruit", "bottled water", "soda", "root vegetables",
-    "pork", "sausage", "citrus fruit", "beef", "frankfurter",
-    "chicken", "butter", "fruit/vegetable juice", "packaged fruit/vegetables",
-    "chocolate", "specialty bar", "butter milk", "pastry", "canned beer",
-    "newspapers", "shopping bags", "whipped/sour cream", "brown bread",
-    "domestic eggs", "margarine", "ham", "coffee", "curd", "white bread"
+    "kienyeji chicken", "sukuma wiki", "matoke", "maziwa mala",
+    "beans", "mango", "ndizi", "ugali", "nyama choma",
+    "chapati", "pilau", "githeri", "mukimo", "samosa",
+    "mandazi", "mutura", "mahindi choma"
 ]
 
 # Main content
