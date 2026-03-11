@@ -2,18 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Product Recommender - Association Rules</title>
+    <title>Kenyan Product Recommender - Association Rules</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 40px;
-            max-width: 600px;
+            max-width: 700px;
         }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            margin: 8px 0;
-            box-sizing: border-box;
+        h2 { color: #2196F3; }
+        .quick-add {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .quick-add button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .quick-add button:hover {
+            background-color: #45a049;
         }
         button {
             padding: 10px 15px;
@@ -21,14 +33,15 @@
             color: white;
             border: none;
             cursor: pointer;
-            margin-top: 10px;
+            margin: 5px;
+            border-radius: 5px;
         }
         .tag {
             display: inline-block;
             background-color: #e0e0e0;
-            padding: 5px 10px;
+            padding: 8px 12px;
             margin: 5px;
-            border-radius: 3px;
+            border-radius: 5px;
         }
         #cartItems, #recommendations {
             margin-top: 20px;
@@ -39,45 +52,53 @@
         .recommendation {
             background-color: #4CAF50;
             color: white;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 3px;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 5px;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
 
-<h2>🛒 Product Recommender</h2>
-<p>Add items to your cart and get personalized recommendations!</p>
+<h2>Product Recommender</h2>
+<p>Add food items to your cart and get personalized recommendations using Machine Learning!</p>
 
-<form id="recommendForm">
-    <label for="cartInput">Add item to cart:</label>
-    <input type="text" id="cartInput" placeholder="e.g., whole milk, yogurt, bread">
-    
-    <button type="button" onclick="addToCart()">Add Item</button>
-    <button type="submit" style="background-color: #FF9800;">Get Recommendations</button>
-    <button type="button" onclick="clearCart()" style="background-color: #f44336;">Clear Cart</button>
-</form>
+<h3>Quick Add Popular Items:</h3>
+<div class="quick-add">
+    <button onclick="quickAdd('beans')">Beans</button>
+    <button onclick="quickAdd('kienyeji chicken')">Kienyeji Chicken</button>
+    <button onclick="quickAdd('sukuma wiki')">Sukuma Wiki</button>
+    <button onclick="quickAdd('matoke')">Matoke</button>
+    <button onclick="quickAdd('maziwa mala')">Maziwa Mala</button>
+    <button onclick="quickAdd('mango')">Mango</button>
+    <button onclick="quickAdd('ndizi')">Ndizi</button>
+    <button onclick="quickAdd('ugali')">Ugali</button>
+    <button onclick="quickAdd('nyama choma')">Nyama Choma</button>
+</div>
+
+<div style="margin: 20px 0;">
+    <button onclick="getRecommendations()" style="background-color: #FF9800; font-size: 16px;"> Get Recommendations</button>
+    <button onclick="clearCart()" style="background-color: #f44336;">🗑️ Clear Cart</button>
+</div>
 
 <div id="cartItems">
-    <h3>Your Cart:</h3>
-    <div id="cartList">Empty</div>
+    <h3>🛒 Your Cart:</h3>
+    <div id="cartList">Empty - Click items above to add</div>
 </div>
 
 <div id="recommendations" style="display:none;">
-    <h3>Recommended Products:</h3>
+    <h3> Recommended Products:</h3>
     <div id="recommendList"></div>
 </div>
 
 <script>
     let cart = [];
 
-    function addToCart() {
-        const item = document.getElementById('cartInput').value.trim();
-        if (item && !cart.includes(item)) {
+    function quickAdd(item) {
+        if (!cart.includes(item)) {
             cart.push(item);
             updateCartDisplay();
-            document.getElementById('cartInput').value = '';
         }
     }
 
@@ -90,10 +111,10 @@
     function updateCartDisplay() {
         const cartList = document.getElementById('cartList');
         if (cart.length === 0) {
-            cartList.innerHTML = 'Empty';
+            cartList.innerHTML = 'Empty - Click items above to add';
         } else {
             cartList.innerHTML = cart.map(item => 
-                `<span class="tag">${item} <button onclick="removeItem('${item}')" style="background:none;border:none;color:red;cursor:pointer;">✕</button></span>`
+                `<span class="tag">${item} <button onclick="removeItem('${item}')" style="background:none;border:none;color:red;cursor:pointer;font-size:16px;">✕</button></span>`
             ).join('');
         }
     }
@@ -103,9 +124,7 @@
         updateCartDisplay();
     }
 
-    document.getElementById('recommendForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-
+    async function getRecommendations() {
         if (cart.length === 0) {
             alert('Please add at least one item to your cart!');
             return;
@@ -128,8 +147,8 @@
             const recommendList = document.getElementById('recommendList');
             
             if (result.recommendations && result.recommendations.length > 0) {
-                recommendList.innerHTML = result.recommendations.map(item => 
-                    `<div class="recommendation">🎯 ${item}</div>`
+                recommendList.innerHTML = result.recommendations.map((item, i) => 
+                    `<div class="recommendation">${i+1}. ${item}</div>`
                 ).join('');
                 recommendDiv.style.display = 'block';
             } else {
@@ -139,17 +158,9 @@
 
         } catch (error) {
             console.error('Error:', error);
-            alert('Error getting recommendations!');
+            alert('Error getting recommendations! Make sure Flask is running.');
         }
-    });
-
-    // Allow adding items by pressing Enter
-    document.getElementById('cartInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addToCart();
-        }
-    });
+    }
 </script>
 
 </body>
