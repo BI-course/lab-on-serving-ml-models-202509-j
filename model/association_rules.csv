@@ -1,0 +1,11 @@
+antecedents,consequents,support,confidence,lift
+['kienyeji chicken'],['sukuma wiki'],0.2,1.0,5.0
+"['kienyeji chicken', 'matoke']",['sukuma wiki'],0.2,1.0,5.0
+"['matoke', 'sukuma wiki']",['kienyeji chicken'],0.2,1.0,5.0
+['beans'],['maziwa mala'],0.8,1.0,1.25
+['beans'],"['matoke', 'maziwa mala']",0.8,1.0,1.25
+['maziwa mala'],"['beans', 'matoke']",0.8,1.0,1.25
+['mango'],['beans'],0.4,1.0,1.25
+"['mango', 'maziwa mala']",['beans'],0.4,1.0,1.25
+['mango'],"['beans', 'matoke']",0.4,1.0,1.25
+['ndizi'],['beans'],0.4,1.0,1.25

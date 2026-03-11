@@ -1,96 +1,205 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Serving ML Models</title>
+    <meta charset="UTF-8">
+    <title>Serving ML Models - API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            max-width: 900px;
+            line-height: 1.6;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .endpoint-list {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 4px solid #4CAF50;
+            margin: 20px 0;
+        }
+        .endpoint-item {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+        }
+        .method {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #2196F3;
+            color: white;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .new-badge {
+            background-color: #FF9800;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Serving Machine Learning Models through a RESTish API using Flask in Python</h1>
-    <table style="border-collapse: collapse; width: 60%;">
+    <h1>🚀 Serving Machine Learning Models through RESTish API</h1>
+    
+    <table>
         <tr>
-            <th style="border-bottom: 2px solid #000;"><strong>Key</strong></th>
-            <th style="border-bottom: 2px solid #000;"><strong>Value</strong></th>
+            <th>Key</th>
+            <th>Value</th>
         </tr>
-        <tr><td colspan="2"><hr style="margin:0;"></td></tr>
         <tr>
-            <td><strong>Course Codes</strong></td>
+            <td><strong>Course Code</strong></td>
             <td>BBT 4206</td>
         </tr>
-        <tr><td colspan="2"><hr style="margin:0;"></td></tr>
         <tr>
-            <td><strong>Course Names</strong></td>
-            <td>BBT 4206: Business Intelligence II (Week 4-6 of 13)</td>
+            <td><strong>Course Name</strong></td>
+            <td>Business Intelligence II (Week 4-6 of 13)</td>
         </tr>
-        <tr><td colspan="2"><hr style="margin:0;"></td></tr>
         <tr>
             <td><strong>Semester</strong></td>
             <td>January to April 2026</td>
         </tr>
-        <tr><td colspan="2"><hr style="margin:0;"></td></tr>
         <tr>
             <td><strong>Lecturer</strong></td>
             <td>Allan Omondi</td>
         </tr>
-        <tr><td colspan="2"><hr style="margin:0;"></td></tr>
         <tr>
             <td><strong>Contact</strong></td>
             <td>aomondi@strathmore.edu</td>
         </tr>
-        <tr><td colspan="2"><hr style="margin:0;"></td></tr>
-        <tr>
-            <td><strong>Note</strong></td>
-            <td>
-                The lecture contains both theory and practice.<br>
-                This forms part of the practice.<br>
-                It is intended for educational purposes only.<br>
-                Recommended citation: <a href="https://raw.githubusercontent.com/course-files/ServingMLModels/refs/heads/main/RecommendedCitation.bib">BibTex</a>
-            </td>
-        </tr>
-        <tr><td colspan="2"><hr style="margin:0;"></td></tr>
     </table>
 
-    <h2>Request Flow</h2>
-    <img src="RequestFlow.jpg" alt="Request Flow Diagram" style="display:block; background:#fff; padding:16px; border:1px solid #ccc; max-width:60%; margin-bottom:24px;">
-    <ol style="line-height:1.7;">
-        <li>
-            <strong>Client</strong> (Postman / cURL / frontend: web, mobile, desktop)<br>
-            <ul>
-                <li>Sends a request to <code>https://yourdomain/api/...</code></li>
-            </ul>
-        </li>
-        <li>
-            <strong>NGINX</strong> (reverse proxy)
-            <ul>
-                <li>Terminates HTTPS (handles SSL/TLS).</li>
-                <li>Serves static files if needed.</li>
-                <li>For <code>/api/...</code>, forwards the request internally to Gunicorn.</li>
-            </ul>
-        </li>
-        <li>
-            <strong>Gunicorn</strong> (Web Server Gateway Interface (WSGI) server)
-            <ul>
-                <li>Accepts HTTP requests from NGINX.</li>
-                <li>Manages multiple worker processes/threads.</li>
-                <li>Translates the raw HTTP into Python WSGI calls.</li>
-            </ul>
-        </li>
-        <li>
-            <strong>Flask</strong> (WSGI app)
-            <ul>
-                <li>Your actual Python application logic.</li>
-                <li>Routes the request to the correct endpoint (<code>@app.route</code>).</li>
-                <li>Returns a response.</li>
-            </ul>
-        </li>
+    <h2>📊 Request Flow Architecture</h2>
+    <img src="RequestFlow.jpg" alt="Request Flow Diagram" style="max-width:100%; border:1px solid #ccc; margin-bottom:20px;">
+    
+    <ol>
+        <li><strong>Client</strong> → Sends request to API endpoint</li>
+        <li><strong>NGINX</strong> → Handles HTTPS, forwards to Gunicorn</li>
+        <li><strong>Gunicorn</strong> → WSGI server, manages workers</li>
+        <li><strong>Flask</strong> → Application logic, returns prediction</li>
     </ol>
-    <p style="margin-left:2em;">
-        <strong>Response returned back up:</strong><br>
-        Flask &rarr; Gunicorn &rarr; NGINX &rarr; Client
+
+    <h2>🎯 Available API Endpoints</h2>
+
+    <div class="endpoint-list">
+        <h3>Classification Models</h3>
+        
+        <div class="endpoint-item">
+            <span class="method">POST</span>
+            <strong>/api/v1/models/decision-tree-classifier/predictions</strong>
+            <br>
+            <small>Predict customer churn (3 features)</small>
+            <br>
+            <a href="api_test_DT_classifier.html" target="_blank">📄 Test Page</a>
+        </div>
+
+        <div class="endpoint-item">
+            <span class="method">POST</span>
+            <strong>/api/v1/models/naive-bayes-classifier/predictions</strong>
+            <span class="new-badge">NEW</span>
+            <br>
+            <small>Predict online purchase intent (17 web analytics features)</small>
+            <br>
+            <a href="api_test_naive_bayes.html" target="_blank">📄 Test Page</a>
+        </div>
+
+        <div class="endpoint-item">
+            <span class="method">POST</span>
+            <strong>/api/v1/models/knn-classifier/predictions</strong>
+            <span class="new-badge">NEW</span>
+            <br>
+            <small>K-Nearest Neighbors classifier (17 web analytics features)</small>
+        </div>
+
+        <div class="endpoint-item">
+            <span class="method">POST</span>
+            <strong>/api/v1/models/svm-classifier/predictions</strong>
+            <span class="new-badge">NEW</span>
+            <br>
+            <small>Support Vector Machine classifier (17 web analytics features)</small>
+        </div>
+
+        <div class="endpoint-item">
+            <span class="method">POST</span>
+            <strong>/api/v1/models/random-forest-classifier/predictions</strong>
+            <span class="new-badge">NEW</span>
+            <br>
+            <small>Random Forest classifier (17 web analytics features)</small>
+        </div>
+    </div>
+
+    <div class="endpoint-list">
+        <h3>Regression Models</h3>
+        
+        <div class="endpoint-item">
+            <span class="method">POST</span>
+            <strong>/api/v1/models/decision-tree-regressor/predictions</strong>
+            <br>
+            <small>Predict percentage profit per unit (restaurant data)</small>
+            <br>
+            <a href="api_test_DT_regressor.html" target="_blank">📄 Test Page</a>
+        </div>
+    </div>
+
+    <div class="endpoint-list">
+        <h3>Recommender Systems</h3>
+        
+        <div class="endpoint-item">
+            <span class="method">POST</span>
+            <strong>/api/v1/models/recommender/predictions</strong>
+            <span class="new-badge">NEW</span>
+            <br>
+            <small>Product recommendations based on shopping cart (association rules)</small>
+            <br>
+            <a href="api_test_recommender.html" target="_blank">📄 Test Page</a>
+        </div>
+    </div>
+
+    <div class="endpoint-list">
+        <h3>Clustering Models</h3>
+        
+        <div class="endpoint-item">
+            <span class="method">POST</span>
+            <strong>/api/v1/models/cluster-predictor/predictions</strong>
+            <span class="new-badge">NEW</span>
+            <br>
+            <small>Predict customer spending cluster (K-Means)</small>
+            <br>
+            <a href="api_test_cluster.html" target="_blank">📄 Test Page</a>
+        </div>
+    </div>
+
+    <hr>
+    <p style="text-align:center; color:#666;">
+        <strong>Total Endpoints:</strong> 8 | 
+        <strong>New Endpoints:</strong> 6 | 
+        <strong>Advanced Tier Submission</strong>
     </p>
 
-    <h2>List of API Endpoints</h2>
-
-    <ul>
-        <li>Decision Tree Classifier API endpoint (POST): <strong>/api/predict_decision_tree_classifier</strong> - sample HTML page: <a href="api_test_DT_classifier.html" target="_blank">api_test_DT_classifier.html</a></li>
-        <li>Decision Tree Regressor API endpoint (POST): <strong>/api/predict_decision_tree_regressor</strong> - sample HTML page: <a href="api_test_DT_regressor.html" target="_blank">api_test_DT_regressor.html</a></li>
-    </ul>
 </body>
 </html>

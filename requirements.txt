@@ -1,0 +1,9 @@
+requests
+numpy
+pandas
+joblib
+scikit-learn
+mlxtend
+flask
+flask-cors
+gunicorn
